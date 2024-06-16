@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  labels:
+    app: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      name: order-service
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: order-service
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 5" ]  # 쿠버네티스가 파드에 SIGTERM 신호를 보내기 전에 5초를 기다려 전체에 요청 전달 중지 명령을 할 수 있도록
+          ports:
+            - containerPort: 9002
+              protocol: TCP
+          env:
+            - name: BVL_JVM_THREAD_COUNT
+              value: "50"
+
+            - name: SPRING_CLOUD_CONFIG_URL
+              value: http://config-service
+            - name: SPRING_CONFIG_IMPORT
+              value: "optional:configserver:http://config-service"
+
+            - name: SPRING_R2DBC_URL
+              value: r2dbc:postgresql://polar-postgres/polardb_order
+            - name: SPRING_FLYWAY_URL
+              value: jdbc:postgresql://polar-postgres/polardb_order
+
+            - name: POLAR_CATALOG-SERVICE-URI
+              value: http://catalog-service
+
