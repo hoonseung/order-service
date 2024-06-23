@@ -6,6 +6,7 @@ plugins {
 
 ext {
     springCloudVersion = "2023.0.2"
+
 }
 
 group = 'com.polarbookshop'
@@ -18,8 +19,16 @@ java {
 }
 
 bootBuildImage{
+    builder = "docker.io/paketobuildpacks/builder-jammy-base"
     imageName = "${project.name}"
     environment = ["BP_JVM_VERSION" : "17.*"]
+    docker {
+        publishRegistry {
+            username = project.findProperty("registryUsername")
+            password = project.findProperty("registryToken")
+            url = project.findProperty("registryUrl")
+        }
+    }
 }
 
 
@@ -37,6 +46,7 @@ dependencies {
     implementation 'org.projectlombok:lombok'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
     annotationProcessor 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:r2dbc-postgresql'
@@ -47,6 +57,7 @@ dependencies {
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.testcontainers:r2dbc'
     testImplementation 'com.squareup.okhttp3:mockwebserver'
+    testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder:4.1.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
