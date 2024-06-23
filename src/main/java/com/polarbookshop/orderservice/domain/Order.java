@@ -48,4 +48,22 @@ public record Order(
                 0
         );
     }
+
+
+
+    public static Order of(Long orderId, String bookIsbn, String bookName, Double bookPrice, Integer quantity, Instant createdDate,
+                           Instant lastModifiedDate, OrderStatus orderstatus, int version) {
+        return new Order(
+                orderId,
+                bookIsbn,
+                bookName,
+                bookPrice,
+                quantity,
+                orderstatus,
+                createdDate,
+                lastModifiedDate,
+                version
+        );
+    }
+
 }

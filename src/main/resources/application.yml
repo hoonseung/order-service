@@ -11,7 +11,7 @@ spring:
   lifecycle:
     timeout-per-shutdown-phase: 15s # 15초간의 우아한 종료 기간 정의
   config:
-    import: "optional:configserver:http://localhost:8888"
+    import: "optional:configserver:"
 
   r2dbc:
     name: polardb_order
@@ -42,7 +42,34 @@ spring:
         max-interval: 2000 # 재시도 지연 최대 시간
         multiplier: 1.1 # 지연 시간 계산 승수
 
+    function:
+      definition: dispatchOrder
+    stream:
+      bindings:
+        dispatchOrder-in-0:
+          destination: order-dispatched
+          group: ${spring.application.name}
+        acceptOrder-out-0:
+          destination: order-accepted
+
+      rabbit:   # 클라우드 스트림 바인딩에 대한 래빗 mq 설정
+        bindings:
+          acceptOrder-out-0:  # 해당 바인딩에 대해 트랜잭션 지원 활성화
+           producer:
+             transacted: true
+
+  rabbitmq:
+    host: localhost
+    username: hoonseung
+    password: seunghoon
+    port: 5672
+    connection-timeout: 5s
+
 
 polar:
   catalog-service-uri: "http://localhost:9001"
+
+
+
+
 
