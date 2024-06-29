@@ -13,7 +13,7 @@ import reactor.test.StepVerifier;
 
 import java.io.IOException;
 
-public class BookClientTests {
+ class BookClientTests {
 
     private MockWebServer mockWebServer;
 

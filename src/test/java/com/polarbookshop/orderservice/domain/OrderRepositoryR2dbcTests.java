@@ -2,10 +2,12 @@ package com.polarbookshop.orderservice.domain;
 
 
 import com.polarbookshop.orderservice.config.DataConfig;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -13,6 +15,10 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import reactor.test.StepVerifier;
+
+import java.util.Objects;
+
+
 
 @DataR2dbcTest
 @Import(DataConfig.class)
@@ -49,6 +55,30 @@ import reactor.test.StepVerifier;
 
         StepVerifier.create(orderRepository.save(rejectOrder))
                 .expectNextMatches(order -> order.status().equals(OrderStatus.REJECTED))
+                .verifyComplete();
+    }
+
+
+    @DisplayName("미인증 시 데이터 감사 확인")
+    @Test
+    void whenCreateOrderNotAuthenticatedThenNoAuditMetaData(){
+        var rejectOrder = OrderService.buildRejectOrder("1234567890", 1);
+
+        StepVerifier.create(orderRepository.save(rejectOrder))
+                .expectNextMatches(order -> Objects.isNull(order.createdBy()) && Objects.isNull(order.lastModifiedBy()))
+                .verifyComplete();
+    }
+
+
+    @DisplayName("인증 시 데이터 감사 확인")
+    @WithMockUser("devJohn")
+    void whenCreateOrderAuthenticatedThenAuditMetaData(){
+        var authUser = "devJohn";
+        var rejectOrder = OrderService.buildRejectOrder("1234567890", 1);
+
+        StepVerifier.create(orderRepository.save(rejectOrder))
+                .expectNextMatches(order -> order.createdBy().equals(authUser)
+                                && (order.lastModifiedBy().equals(authUser)))
                 .verifyComplete();
     }
 }
