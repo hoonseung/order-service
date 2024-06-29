@@ -12,7 +12,6 @@ import org.springframework.security.web.server.savedrequest.NoOpServerRequestCac
 public class SecurityConfig {
 
 
-
     @Bean
     public SecurityWebFilterChain config(ServerHttpSecurity http) {
         return http.authorizeExchange(exchange -> exchange.anyExchange().authenticated() )
