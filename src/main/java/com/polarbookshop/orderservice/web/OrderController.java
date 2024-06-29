@@ -5,9 +5,13 @@ import com.polarbookshop.orderservice.domain.Order;
 import com.polarbookshop.orderservice.domain.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.security.Principal;
 
 @RequiredArgsConstructor
 @RequestMapping("/orders")
@@ -19,8 +23,8 @@ public class OrderController {
 
     //
     @GetMapping
-    public Flux<Order> getAllOrders(){
-        return orderService.getAllOrders();
+    public Flux<Order> getAllOrders(@AuthenticationPrincipal Jwt jwt){ // Principal 객체안에 jwt 존재
+        return orderService.getAllOrders(jwt.getSubject());
     }
 
     @PostMapping

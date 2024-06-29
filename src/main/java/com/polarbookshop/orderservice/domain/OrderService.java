@@ -31,8 +31,8 @@ public class OrderService {
 
     // 여러 개의 객체를 위해 사용
     // 0개 이상의 주문에 대한 비동기 시퀀스를 나타내는 FLUX
-    public Flux<Order> getAllOrders(){
-        return orderRepository.findAll();
+    public Flux<Order> getAllOrders(String userId){
+        return orderRepository.findAllByCreatedBy(userId);
     }
 
 
@@ -93,7 +93,9 @@ public class OrderService {
                 existingOrder.bookPrice(),
                 existingOrder.quantity(),
                 existingOrder.createdDate(),
+                existingOrder.createdBy(),
                 existingOrder.lastModifiedDate(),
+                existingOrder.lastModifiedBy(),
                 OrderStatus.DISPATCHED,
                 existingOrder.version()
         );

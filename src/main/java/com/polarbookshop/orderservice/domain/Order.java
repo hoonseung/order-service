@@ -1,10 +1,7 @@
 package com.polarbookshop.orderservice.domain;
 
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Version;
+import org.springframework.data.annotation.*;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
@@ -27,8 +24,15 @@ public record Order(
 
         @CreatedDate
         Instant createdDate,
+
+        @CreatedBy
+        String createdBy,
+
         @LastModifiedDate
         Instant lastModifiedDate,
+
+        @LastModifiedBy
+        String lastModifiedBy,
 
         @Version
         int version
@@ -45,14 +49,17 @@ public record Order(
                 orderstatus,
                 null,
                 null,
+                null,
+                null,
                 0
         );
     }
 
 
 
-    public static Order of(Long orderId, String bookIsbn, String bookName, Double bookPrice, Integer quantity, Instant createdDate,
-                           Instant lastModifiedDate, OrderStatus orderstatus, int version) {
+    public static Order of(Long orderId, String bookIsbn, String bookName, Double bookPrice, Integer quantity,
+                           Instant createdDate, String createdBy, Instant lastModifiedDate, String lastModifiedBy,
+                           OrderStatus orderstatus, int version) {
         return new Order(
                 orderId,
                 bookIsbn,
@@ -61,7 +68,9 @@ public record Order(
                 quantity,
                 orderstatus,
                 createdDate,
+                createdBy,
                 lastModifiedDate,
+                lastModifiedBy,
                 version
         );
     }
