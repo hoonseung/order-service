@@ -6,6 +6,11 @@ server:
     idle-timeout: 15s # 데이터가 전송되지 않는 경우 tcp 연결을 닫기 전에 기다리는 시간
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/PolarBookshop
   application:
     name: order-service
   lifecycle:
@@ -49,7 +54,7 @@ spring:
         dispatchOrder-in-0:
           destination: order-dispatched
           group: ${spring.application.name}
-        acceptOrder-out-0:
+        acceptOrder-out-0:  # StreamBridge 에 의해 생성되고 관리되는 출력 바인딩
           destination: order-accepted
 
       rabbit:   # 클라우드 스트림 바인딩에 대한 래빗 mq 설정

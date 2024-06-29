@@ -4,10 +4,6 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.5'
 }
 
-ext {
-    springCloudVersion = "2023.0.2"
-
-}
 
 group = 'com.polarbookshop'
 version = '0.0.1-SNAPSHOT'
@@ -36,6 +32,13 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    springCloudVersion = "2023.0.2"
+    set('testcontainersVersion', "1.17.3")
+    set('testKeycloakVersion', "3.3.1")
+
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -47,16 +50,22 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
     annotationProcessor 'org.projectlombok:lombok'
+    runtimeOnly 'org.flywaydb:flyway-core'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:r2dbc-postgresql'
+    runtimeOnly 'org.springframework:spring-jdbc'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'com.squareup.okhttp3:mockwebserver'
+    testImplementation "com.github.dasniko:testcontainers-keycloak:${testKeycloakVersion}"
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.testcontainers:r2dbc'
-    testImplementation 'com.squareup.okhttp3:mockwebserver'
     testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder:4.1.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
@@ -64,6 +73,7 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
     }
 }
 
