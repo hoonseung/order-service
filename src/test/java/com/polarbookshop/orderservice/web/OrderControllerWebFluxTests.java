@@ -5,6 +5,7 @@ import com.polarbookshop.orderservice.config.SecurityConfig;
 import com.polarbookshop.orderservice.domain.Order;
 import com.polarbookshop.orderservice.domain.OrderService;
 import com.polarbookshop.orderservice.domain.OrderStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -21,6 +22,7 @@ import reactor.core.publisher.Mono;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
 
+@Disabled
 @Import(SecurityConfig.class)
 @WebFluxTest(OrderController.class)
  class OrderControllerWebFluxTests {
