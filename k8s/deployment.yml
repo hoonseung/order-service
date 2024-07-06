@@ -14,11 +14,27 @@ spec:
       name: order-service
       labels:
         app: order-service
+      annotations:
+        prometheus.io/scrape: "true" # 프로메테우스에게 이 파드에 있는 컨터에너로부터 데이터를 가져와야함을 알린다
+        prometheus.io/path: /actuator/prometheus # 프로메테우스 메트릭을 제공하는 http 엔드포인트 지정
+        prometheus.io/port: "9002" # 메트릭 엔드포인트 포트
     spec:
       containers:
         - name: order-service
           image: order-service
           imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 9002
+            initialDelaySeconds: 13
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 9002
+            initialDelaySeconds: 8
+            periodSeconds: 15
           lifecycle:
             preStop:
               exec:
@@ -29,18 +45,10 @@ spec:
           env:
             - name: BVL_JVM_THREAD_COUNT
               value: "50"
-            - name: SPRING_CLOUD_CONFIG_URL
-              value: http://config-service
-            - name: SPRING_CONFIG_IMPORT
-              value: "optional:configserver:http://config-service"
-            - name: SPRING_R2DBC_URL
-              value: r2dbc:postgresql://polar-postgres/polardb_order
-            - name: SPRING_FLYWAY_URL
-              value: jdbc:postgresql://polar-postgres/polardb_order
-            - name: POLAR_CATALOG-SERVICE-URI
-              value: http://catalog-service
-            - name: SPRING_RABBITMQ_HOST
-              value: "polar-rabbitmq"
-            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
-              value: http://polar-keycloak/realms/PolarBookshop
-
+          volumeMounts:
+            - mountPath: /workspace/config
+              name: order-config-volume
+      volumes:
+        - name: order-config-volume
+          configMap:
+            name: order-config

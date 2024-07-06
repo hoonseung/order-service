@@ -9,7 +9,7 @@ custom_build(
 )
 
 #배포
-k8s_yaml(['k8s/deployment.yml', 'k8s/service.yml'])
+k8s_yaml(kustomize('k8s'))
 
 #관리
 k8s_resource('order-service', port_forwards=['9002'])
