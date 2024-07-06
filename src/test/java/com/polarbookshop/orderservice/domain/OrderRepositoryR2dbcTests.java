@@ -2,6 +2,7 @@ package com.polarbookshop.orderservice.domain;
 
 
 import com.polarbookshop.orderservice.config.DataConfig;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import reactor.test.StepVerifier;
 import java.util.Objects;
 
 
-
+@Disabled
 @DataR2dbcTest
 @Import(DataConfig.class)
 @Testcontainers

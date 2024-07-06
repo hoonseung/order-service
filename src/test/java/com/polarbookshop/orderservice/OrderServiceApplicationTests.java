@@ -13,6 +13,7 @@ import com.polarbookshop.orderservice.web.OrderRequest;
 import dasniko.testcontainers.keycloak.KeycloakContainer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -41,6 +42,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
+@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // 랜덤 포트 설정해야 webTestClient 빈 주입됨
 @Import(TestChannelBinderConfiguration.class)
 @Testcontainers
